@@ -12,7 +12,7 @@ outputList = []
 
 #gets current date and writes to list
 dateToday = date.today()
-outputList.append(dateToday + "\n")
+outputList.write(dateToday + "\n")
 
 # adds a link to the Sophos-Test website
 addedInfo = "Aufschlüsselung unter http://sophostest.com/ \n"

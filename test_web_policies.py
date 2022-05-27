@@ -1,30 +1,38 @@
-﻿# Last update @17/05/2022 github.com/unknowncowman
+﻿# Last update @27/05/2022 github.com/unknowncowman
 # 
 # This script sends webrequests to a list of websites and writes an 
 # info of text into a result file if the request runs into an error
 
-# adds the current date
-$date = Get-Date -Format "`r`ndddd dd.MM.yyyy HH:mm:ss `r`n"
-$date | Out-File -FilePath $PSScriptRoot\Blockierte_Webseiten.txt
+# imports
+import requests as reqs
+from datetime import date
+
+# creates list for output
+outputList = []
+
+#gets current date and writes to list
+dateToday = date.today()
+outputList.append(dateToday + "\n")
 
 # adds a link to the Sophos-Test website
-$sophostest = "Aufschlüsselung unter http://sophostest.com/`r`n"
-$sophostest | Out-File -Append -FilePath $PSScriptRoot\Blockierte_Webseiten.txt
+addedInfo = "Aufschlüsselung unter http://sophostest.com/ \n"
+outputList.append(addedInfo)
 
-# iterates a file that contains links
-foreach($line in [System.IO.File]::ReadLines("$PSScriptRoot\testwebsites.txt")) 
-{
-    # sends webrequests to the link in $line
-    $WebResponse = Invoke-WebRequest $line 
-    
-    # checks if $WebResponse above ran without errors. Makes an output if it ran into an error.
-    if($?)
-    {
-      
-    }
-    #pipes a message into a file if an error occured in $WebResponse
-    else
-    {
-    "nicht erreichbar - " + $line | Out-File -Append -FilePath $PSScriptRoot\Blockierte_Webseiten.txt
-    }
-}
+# iterates a file that contains links, outputs into outputList after formatting it
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
+with open(__location__, "r") as inputFile:
+    for line in inputFile:
+        inputLine = line.strip() 
+        response = reqs.get(inputLine)                  # To execute get request 
+        responseStatusCode = response.status_code       # To print http response code
+        if responseStatusCode != 200:
+            outputList.Append("NICHT ERREICHBAR - " + inputLine + "\n")
+
+
+# outputs outputList into textfile 
+
+textfile = open("Blockierte_Webseiten.txt", "w")
+for element in outputList:
+    textfile.write(element + "\n")
+textfile.close()

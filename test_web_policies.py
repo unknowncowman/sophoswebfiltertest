@@ -19,9 +19,8 @@ addedInfo = "Aufschlüsselung unter http://sophostest.com/ \n"
 outputList.append(addedInfo)
 
 # iterates a file that contains links, outputs into outputList after formatting it
-__location__ = os.path.realpath(
-    os.path.join(os.getcwd(), os.path.dirname(__file__)))
-with open(__location__, "r") as inputFile:
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+with open(os.path.join(__location__, "r")) as inputFile:
     for line in inputFile:
         inputLine = line.strip() 
         response = reqs.get(inputLine)                  # To execute get request 
